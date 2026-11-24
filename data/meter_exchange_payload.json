@@ -1,0 +1,42 @@
+{
+  "orderNo": "{{ORDER_NO}}",
+  "installationState": 1,
+  "executionDate": "{{EXECUTION_DATE_UTC}}",
+  "orderPositions": [
+    {
+      "positionNo": 1,
+      "activity": 3,
+      "mountingDevice": {
+        "deviceType": 1, "deviceNo": "{{NEW_METER_NUMBER}}", "division": "1",
+        "energyDirection": "ZRZ", "tariffNumber": "ETZ",
+        "countingDevices": [
+          { "countingDeviceNo": "1-0:2.8.0", "countingDeviceName": "Wirkarbeit Lieferung", "integralPart": 6, "fractionalPart": 0, "value": "{{NEW_READING_280}}", "offPeakFlag": false },
+          { "countingDeviceNo": "1-0:1.8.0", "countingDeviceName": "Wirkarbeit Bezug", "integralPart": 6, "fractionalPart": 0, "value": "{{NEW_READING_180}}", "offPeakFlag": false }
+        ],
+        "deviceConnections": [
+          { "connectionDeviceType": 8, "lmnConnectionType": "RS485", "connectionDeviceOrderPosition": 2,
+            "connectionDevice": { "deviceType": 8, "deviceNo": "{{GATEWAY_NUMBER}}", "division": "1", "deviceModel": "gateway_model_1" }
+          }
+        ]
+      },
+      "demountingDevice": {
+        "deviceType": 1, "deviceNo": "{{OLD_METER_NUMBER}}", "division": "1",
+        "meterType": "EHZ", "meterSubType": "Z03", "deviceConnections": [],
+        "countingDevices": [
+          { "countingDeviceNo": "1-0:2.8.0", "countingDeviceName": "Wirkarbeit Lieferung", "integralPart": 6, "fractionalPart": 0, "value": "{{OLD_READING_280}}", "offPeakFlag": false },
+          { "countingDeviceNo": "1-0:1.8.0", "countingDeviceName": "Wirkarbeit Bezug", "integralPart": 6, "fractionalPart": 0, "value": "{{OLD_READING_180}}", "offPeakFlag": false }
+        ]
+      }
+    },
+    {
+      "positionNo": 2, "activity": 1, "deviceLocationNo": "{{DEVICE_LOCATION}}",
+      "mountingDevice": { "deviceType": 8, "deviceNo": "{{GATEWAY_NUMBER}}", "division": "E", "deviceModel": "gateway_model_1", 
+      "countingDevices": [],
+        "deviceConnections": [
+          { "connectionDeviceType": 1, "lmnConnectionType": "RS485", "connectionDeviceOrderPosition": 1, "connectionDevice": { "deviceType": 0 } }
+        ]
+      }
+    },
+    { "positionNo": 3, "activity": 4, "deviceLocationNo": "{{DEVICE_LOCATION}}" }
+  ]
+}
