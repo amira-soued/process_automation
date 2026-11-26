@@ -13,6 +13,8 @@ from pathlib import Path
 
 import httpx
 
+from validation import check_columns, validate_batch
+
 
 SOURCE_URL = "https://field-service.example/meter-exchanges"
 DEFAULT_CSV = Path(__file__).resolve().parent / "data" / "meter_exchange_data.csv"
@@ -26,7 +28,9 @@ def mock_source(csv_path: Path) -> httpx.MockTransport:
         if request.method != "GET":
             return httpx.Response(405, headers={"Allow": "GET"})
         with csv_path.open(encoding="utf-8", newline="") as source:
-            records = list(csv.DictReader(source, delimiter=";", strict=True))
+            reader = csv.DictReader(source, delimiter=";", strict=True)
+            check_columns(reader.fieldnames or [])
+            records = list(reader)
         return httpx.Response(200, json=records)
 
     return httpx.MockTransport(handle_request)
@@ -43,16 +47,19 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("csv_path", nargs="?", type=Path, default=DEFAULT_CSV,
                         help="Source CSV (defaults to data/meter_exchange_data.csv)")
+    parser.add_argument("--validate", action="store_true",
+                        help="Print cleaned eligible records, exceptions, warnings, and counts")
     args = parser.parse_args()
 
     try:
         with httpx.Client(transport=mock_source(args.csv_path), timeout=10) as client:
             records = fetch_meter_exchanges(client)
-    except (OSError, csv.Error, UnicodeError, httpx.HTTPError) as error:
+    except (OSError, csv.Error, ValueError, httpx.HTTPError) as error:
         print(f"Could not fetch meter exchanges: {error}", file=sys.stderr)
         return 1
 
-    print(json.dumps(records, ensure_ascii=False, indent=2))
+    result = validate_batch(records) if args.validate else records
+    print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
 
 
