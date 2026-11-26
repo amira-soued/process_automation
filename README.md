@@ -29,12 +29,32 @@ Fetch the records, validate them, and save the report.
 python fetch_meter_exchanges.py --validate > validation-report.json
 ```
 
-Both commands use `data/meter_exchange_data.csv` by default. Pass a CSV path
-as an argument to use a different file.
+Run the full pipeline and configure the mock destination to return HTTP 422
+for order `24592`.
 
-A source error prints a message to standard error and exits with a nonzero
-status. Row-level validation errors are recorded in the report, and processing
-continues with the remaining rows.
+```sh
+python fetch_meter_exchanges.py --submit --fail-order 24592
+```
+
+In submission mode, the application fills the placeholders in
+`data/meter_exchange_payload.json` with cleaned values from each eligible row.
+It preserves fixed template fields and sends each payload as a separate HTTPX
+`POST` to an in-memory mock. A row with blocking validation issues is skipped.
+The `--fail-order` option selects which eligible order the mock rejects.
+
+All modes use `data/meter_exchange_data.csv` by default. Pass a CSV path as an
+argument to use a different file.
+
+The source `GET` waits 250 ms and retries once if the connection fails to open
+or times out while opening (`ConnectError` or `ConnectTimeout`). Repeating this
+read can recover from a temporary connection problem. The run stops with a
+clear error and a nonzero exit status if both attempts fail. HTTP status errors
+and timeouts while reading the response are reported immediately.
+
+Validation errors and destination failures are recorded by row, and processing
+continues with the remaining orders. Each submission gets one attempt. A timeout
+waiting for the reply can leave the order's status unknown, so the report asks
+for verification before resubmitting.
 
 ### Run the tests
 
@@ -42,15 +62,35 @@ continues with the remaining rows.
 python -m unittest -v test_validation
 ```
 
-The tests cover cleaning, validation rules, the supplied CSV, and a mocked
-HTTP 503 from the source API.
+The suite covers cleaning, validation, and the supplied CSV. Source tests check
+recovery on the second `GET` after a connection error or connection timeout,
+failure after two attempts, and a single attempt for HTTP 503.
+The payload test checks the meter IDs, register
+readings, UTC timestamp, repeated gateway and placement values, and fixed
+template fields. The destination tests simulate HTTP 422, a read timeout,
+and a connection failure. They check that the affected order is reported
+once, blocked validation rows are skipped, and later eligible rows still
+reach the destination.
 
-### Find the generated report
+### Find the generated outputs
 
-The validation command saves `validation-report.json` in the repository root.
-The report contains counts, cleaned eligible records, exceptions, and warnings.
-Row numbers count CSV records with the header as row 1. Each issue identifies
-the field, category, and reason. Warning counts include warnings on blocked rows.
+The validation command above saves `validation-report.json` with cleaned
+eligible records, exceptions, warnings, and counts.
+
+The submission command prints summary counts and writes two files in the
+repository root. Use `--output-dir` to choose another folder.
+
+- **`run-report.json`** contains batch counts, all validation and submission
+  exceptions, and warnings. Each exception includes the CSV row number, order
+  number when available, stage, and an issue list with categories and readable
+  reasons. HTTP status errors also include the numeric status.
+- **`example-payload.json`** contains the JSON body from the first accepted
+  submission. It contains JSON `null` if the destination accepts no orders.
+
+Row numbers count CSV records with the header as row 1. Warning counts
+include warnings on blocked rows. With the supplied CSV and
+`--fail-order 24592`, the run creates 58 payloads. The mock accepts 57 and
+rejects one. Four other rows are blocked by validation.
 
 ## Validation decisions
 
@@ -70,8 +110,9 @@ the field, category, and reason. Warning counts include warnings on blocked rows
   `1.234` that could mean 1234 or a fractional value. Emit decimal strings
   without rounding. Flag a positive installation reading on either register
   for verification. A reused meter can carry a prior total, so this is a
-  warning. The destination's handling of fractional readings with
-  the template's fixed `fractionalPart: 0` needs confirmation at the mapping stage.
+  warning. The mock accepts normalized decimal strings with the template's
+  fixed `fractionalPart: 0`. Confirm that representation with the destination
+  contract before integrating with a real service.
 - **Time.** Interpret the specified day-month-year and hour-minute format in
   Europe/Berlin and emit UTC. Hold impossible dates and times in the missing
   or repeated hour at a daylight-saving transition.

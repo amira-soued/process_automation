@@ -1,0 +1,256 @@
+{
+  "summary": {
+    "fetched": 62,
+    "eligible": 58,
+    "blocked": 4,
+    "rows_with_warnings": 15,
+    "payloads_created": 58,
+    "submitted": 57,
+    "submission_failed": 1
+  },
+  "exceptions": [
+    {
+      "row_number": 3,
+      "order_no": "24592",
+      "stage": "destination",
+      "issues": [
+        {
+          "field": "destination",
+          "category": "destination_http_error",
+          "reason": "Destination returned HTTP 422 Unprocessable Entity.",
+          "http_status": 422
+        }
+      ]
+    },
+    {
+      "row_number": 16,
+      "order_no": "13905",
+      "issues": [
+        {
+          "field": "meter_number_old",
+          "category": "missing_required_field",
+          "reason": "Old meter ID is missing. Confirm removal or a possible first installation."
+        }
+      ],
+      "stage": "validation"
+    },
+    {
+      "row_number": 32,
+      "order_no": "10851",
+      "issues": [
+        {
+          "field": "meter_number_old",
+          "category": "invalid_meter_id",
+          "reason": "Expected an identifiable meter. Confirm the device number."
+        }
+      ],
+      "stage": "validation"
+    },
+    {
+      "row_number": 40,
+      "order_no": "23396",
+      "issues": [
+        {
+          "field": "meter_number_old",
+          "category": "same_meter",
+          "reason": "Old and new meter IDs match after normalization. Confirm replacement."
+        }
+      ],
+      "stage": "validation"
+    },
+    {
+      "row_number": 63,
+      "order_no": "96673",
+      "issues": [
+        {
+          "field": "meter_number_old",
+          "category": "missing_required_field",
+          "reason": "Old meter ID is missing. Confirm removal or a possible first installation."
+        },
+        {
+          "field": "meter_reading_demount_1.8.0",
+          "category": "missing_required_field",
+          "reason": "A value is required to finish this order."
+        }
+      ],
+      "stage": "validation"
+    }
+  ],
+  "warnings": [
+    {
+      "row_number": 4,
+      "order_no": "13278",
+      "issues": [
+        {
+          "field": "postal_code",
+          "category": "invalid_postal_code",
+          "reason": "Expected five digits. Verify the address before correcting it."
+        }
+      ]
+    },
+    {
+      "row_number": 5,
+      "order_no": "46048",
+      "issues": [
+        {
+          "field": "postal_code",
+          "category": "invalid_postal_code",
+          "reason": "Expected five digits. Verify the address before correcting it."
+        }
+      ]
+    },
+    {
+      "row_number": 6,
+      "order_no": "42098",
+      "issues": [
+        {
+          "field": "postal_code",
+          "category": "invalid_postal_code",
+          "reason": "Expected five digits. Verify the address before correcting it."
+        }
+      ]
+    },
+    {
+      "row_number": 7,
+      "order_no": "39256",
+      "issues": [
+        {
+          "field": "postal_code",
+          "category": "invalid_postal_code",
+          "reason": "Expected five digits. Verify the address before correcting it."
+        }
+      ]
+    },
+    {
+      "row_number": 8,
+      "order_no": "28289",
+      "issues": [
+        {
+          "field": "postal_code",
+          "category": "invalid_postal_code",
+          "reason": "Expected five digits. Verify the address before correcting it."
+        }
+      ]
+    },
+    {
+      "row_number": 9,
+      "order_no": "23434",
+      "issues": [
+        {
+          "field": "postal_code",
+          "category": "invalid_postal_code",
+          "reason": "Expected five digits. Verify the address before correcting it."
+        }
+      ]
+    },
+    {
+      "row_number": 10,
+      "order_no": "98696",
+      "issues": [
+        {
+          "field": "postal_code",
+          "category": "invalid_postal_code",
+          "reason": "Expected five digits. Verify the address before correcting it."
+        }
+      ]
+    },
+    {
+      "row_number": 11,
+      "order_no": "81482",
+      "issues": [
+        {
+          "field": "postal_code",
+          "category": "invalid_postal_code",
+          "reason": "Expected five digits. Verify the address before correcting it."
+        }
+      ]
+    },
+    {
+      "row_number": 12,
+      "order_no": "21395",
+      "issues": [
+        {
+          "field": "postal_code",
+          "category": "invalid_postal_code",
+          "reason": "Expected five digits. Verify the address before correcting it."
+        }
+      ]
+    },
+    {
+      "row_number": 13,
+      "order_no": "87397",
+      "issues": [
+        {
+          "field": "postal_code",
+          "category": "invalid_postal_code",
+          "reason": "Expected five digits. Verify the address before correcting it."
+        }
+      ]
+    },
+    {
+      "row_number": 14,
+      "order_no": "65302",
+      "issues": [
+        {
+          "field": "postal_code",
+          "category": "invalid_postal_code",
+          "reason": "Expected five digits. Verify the address before correcting it."
+        }
+      ]
+    },
+    {
+      "row_number": 15,
+      "order_no": "14165",
+      "issues": [
+        {
+          "field": "postal_code",
+          "category": "invalid_postal_code",
+          "reason": "Expected five digits. Verify the address before correcting it."
+        }
+      ]
+    },
+    {
+      "row_number": 16,
+      "order_no": "13905",
+      "issues": [
+        {
+          "field": "postal_code",
+          "category": "invalid_postal_code",
+          "reason": "Expected five digits. Verify the address before correcting it."
+        }
+      ]
+    },
+    {
+      "row_number": 40,
+      "order_no": "23396",
+      "issues": [
+        {
+          "field": "meter_reading_mount_1.8.0",
+          "category": "nonzero_installation_reading",
+          "reason": "Verify that 3695.7 was read from register 1.8.0 on installed meter 27699085."
+        },
+        {
+          "field": "smgw_number",
+          "category": "unusual_gateway",
+          "reason": "Gateway differs from the usual ETHE format. Verify against inventory."
+        }
+      ]
+    },
+    {
+      "row_number": 42,
+      "order_no": "59797",
+      "issues": [
+        {
+          "field": "meter_reading_mount_1.8.0",
+          "category": "nonzero_installation_reading",
+          "reason": "Verify that 33904.7 was read from register 1.8.0 on installed meter 26979780."
+        },
+        {
+          "field": "smgw_number",
+          "category": "unusual_gateway",
+          "reason": "Gateway differs from the usual ETHE format. Verify against inventory."
+        }
+      ]
+    }
+  ]
+}
