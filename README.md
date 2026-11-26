@@ -1,20 +1,53 @@
 # process_automation
 
-## Fetch and validate meter exchanges
+## Run locally
 
-From the repository root, install HTTPX in your Python environment with
-`python3 -m pip install httpx`. Run the validation and its tests with:
+Run these commands from the repository root on macOS or Linux using Python
+3.9 or later.
+
+### Install dependencies
+
+Create and activate a virtual environment, then install HTTPX.
 
 ```sh
-python3 fetch_meter_exchanges.py --validate > validation-report.json
-python3 -m unittest -v test_validation
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install httpx
 ```
 
-The command fetches the original strings through the mocked HTTP source.
-Without `--validate` it prints those raw records. Both modes accept an optional
-CSV path. A source error exits with a nonzero status. A completed validation
-run reports row exceptions in JSON so one incomplete exchange can be skipped.
+### Run the application
 
+Fetch the raw records from the mocked HTTP source and print them as JSON.
+
+```sh
+python fetch_meter_exchanges.py
+```
+
+Fetch the records, validate them, and save the report.
+
+```sh
+python fetch_meter_exchanges.py --validate > validation-report.json
+```
+
+Both commands use `data/meter_exchange_data.csv` by default. Pass a CSV path
+as an argument to use a different file.
+
+A source error prints a message to standard error and exits with a nonzero
+status. Row-level validation errors are recorded in the report, and processing
+continues with the remaining rows.
+
+### Run the tests
+
+```sh
+python -m unittest -v test_validation
+```
+
+The tests cover cleaning, validation rules, the supplied CSV, and a mocked
+HTTP 503 from the source API.
+
+### Find the generated report
+
+The validation command saves `validation-report.json` in the repository root.
 The report contains counts, cleaned eligible records, exceptions, and warnings.
 Row numbers count CSV records with the header as row 1. Each issue identifies
 the field, category, and reason. Warning counts include warnings on blocked rows.
